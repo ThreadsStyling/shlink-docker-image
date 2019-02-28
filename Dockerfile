@@ -9,18 +9,16 @@ ENV APCuBC_VERSION 1.0.4
 WORKDIR /etc/shlink
 
 RUN \
-
+    # Needed for postgres support
+    apk --no-cache add postgresql-dev && \
     # Install common php extensions
-    docker-php-ext-install -j"$(nproc)" pdo_mysql calendar && \
-
+    docker-php-ext-install -j"$(nproc)" pdo_mysql calendar pdo_pgsql && \
     # Install sqlite
     apk add --no-cache sqlite-libs sqlite-dev && \
     docker-php-ext-install -j"$(nproc)" pdo_sqlite && \
-
     # Install other PHP packages that depend on other system packages
     apk add --no-cache icu-dev && \
     docker-php-ext-install -j"$(nproc)" intl && \
-
     apk add --no-cache libzip-dev zlib-dev libpng-dev && \
     docker-php-ext-install -j"$(nproc)" zip gd
 
